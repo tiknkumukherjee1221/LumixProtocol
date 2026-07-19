@@ -3,11 +3,11 @@
 import { useRef, useMemo, useEffect, useState } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { MathUtils } from "three"
-import type { Mesh, LumixProtocolrMaterial } from "three"
+import type { Mesh, ShaderMaterial } from "three"
 
 function Sphere() {
   const meshRef = useRef<Mesh>(null)
-  const materialRef = useRef<LumixProtocolrMaterial>(null)
+  const materialRef = useRef<ShaderMaterial>(null)
   const { pointer } = useThree()
 
   const uniforms = useMemo(
@@ -18,7 +18,7 @@ function Sphere() {
     [],
   )
 
-  const vertexLumixProtocolr = `
+  const vertexShader = `
     uniform float uTime;
     varying vec2 vUv;
     varying float vDisplacement;
@@ -86,7 +86,7 @@ function Sphere() {
     }
   `
 
-  const fragmentLumixProtocolr = `
+  const fragmentShader = `
     varying vec2 vUv;
     varying float vDisplacement;
     
@@ -117,10 +117,10 @@ function Sphere() {
   return (
     <mesh ref={meshRef}>
       <icosahedronGeometry args={[1.8, 64]} />
-      <lumixprotocolrMaterial
+      <shaderMaterial
         ref={materialRef}
-        vertexLumixProtocolr={vertexLumixProtocolr}
-        fragmentLumixProtocolr={fragmentLumixProtocolr}
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
         uniforms={uniforms}
         transparent
         wireframe

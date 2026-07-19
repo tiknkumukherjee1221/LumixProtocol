@@ -1,31 +1,52 @@
 name: Deploy
+
 on:
   workflow_dispatch:
     inputs:
       wasm:
         description: Built contract WASM path
-        required: true
+        required: false
         type: string
+
 permissions:
   contents: read
+
 jobs:
   deploy:
+    name: Deploy to testnet
     runs-on: ubuntu-latest
     environment: production
+    timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm }
-      - uses: actions/setup-java@v4
-        with: { distribution: temurin, java-version: 17 }
-      - run: cargo install stellar-cli --locked
-      - run: npm ci
-      - run: npm run contracts:build
-      - run: npm run deploy:testnet
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32v1-none
+      - name: Cache Rust build artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: contracts/stellar
+      - name: Install stellar-cli
+        run: cargo install stellar-cli --locked
+      - name: Install dependencies
+        run: npm ci
+      - name: Build contracts
+        run: npm run contracts:build
+      - name: Deploy to testnet
         env:
           STELLAR_DEPLOYER_SECRET: ${{ secrets.STELLAR_DEPLOYER_SECRET }}
           CONTRACT_WASM: ${{ inputs.wasm }}
-      - run: npm run deployment:verify
-      - name: Deployment rollback
+        run: npm run deploy:testnet
+      - name: Verify deployment
+        run: npm run deployment:verify
+      - name: Rollback guidance
         if: failure()
-        run: echo "Rollback is operator-controlled: restore the previous manifest and submit the prior WASM hash through the guarded deploy job."
+        run: |
+          echo "Rollback is operator-controlled: restore the previous manifest and submit the prior WASM hash through the guarded deploy job."
