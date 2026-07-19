@@ -1,0 +1,1 @@
+{"name":"@lumixprotocol/sdk","version":"0.1.0","type":"module","private":true,"exports":{".":"./src/index.ts"},"scripts":{"test":"tsx src/sdk-test.ts"},"dependencies":{"@lumixprotocol/cctp-utils":"*","@lumixprotocol/note-vault":"*","tweetnacl":"^1.0.3"}}
