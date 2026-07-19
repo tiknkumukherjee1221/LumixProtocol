@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: dtolnay/rust-toolchain@stable
+        with: { toolchain: stable, targets: wasm32v1-none }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: node --import tsx packages/note-vault/src/vault-test.ts
+      - run: node --import tsx packages/auth-privy/src/auth-test.ts
+      - run: node --import tsx scripts/contracts-test.ts
+      - run: node --import tsx scripts/circuits-test.ts
+      - run: npm run frontend:install
+      - run: npm --prefix frontend run typecheck
+      - run: npm --prefix frontend run lint
+      - run: npm --prefix frontend run build
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with: { name: frontend-build, path: frontend/.next }

@@ -1,0 +1,31 @@
+name: Deploy
+on:
+  workflow_dispatch:
+    inputs:
+      wasm:
+        description: Built contract WASM path
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - run: cargo install stellar-cli --locked
+      - run: npm ci
+      - run: npm run contracts:build
+      - run: npm run deploy:testnet
+        env:
+          STELLAR_DEPLOYER_SECRET: ${{ secrets.STELLAR_DEPLOYER_SECRET }}
+          CONTRACT_WASM: ${{ inputs.wasm }}
+      - run: npm run deployment:verify
+      - name: Deployment rollback
+        if: failure()
+        run: echo "Rollback is operator-controlled: restore the previous manifest and submit the prior WASM hash through the guarded deploy job."

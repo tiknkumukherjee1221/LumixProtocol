@@ -1,0 +1,10 @@
+.env
+.env.generated
+.stellar-project/
+node_modules/
+target/
+**/target/
+circuits/**/build/
+circuits/**/output/
+.scratch/
+.zk-ref/
