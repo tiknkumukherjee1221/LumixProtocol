@@ -117,21 +117,7 @@ untracked `.env`.
 
 ## CI/CD
 
-Every push and pull request runs the staged pipeline in
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) — see
-[`docs/ci-cd.md`](docs/ci-cd.md) for the full diagram:
-
-```
-Lint → Typecheck → ⎧ TypeScript tests (Postgres 16 service)
-                   ⎨ Soroban contracts (cargo test)
-                   ⎩ Frontend (lint · typecheck · next build)
-                 → Security gates → CI green ✅
-```
-
-Deployment is never automatic: [`deploy.yml`](.github/workflows/deploy.yml) is
-manually dispatched, guarded by the `production` environment, and requires the
-`STELLAR_DEPLOYER_SECRET` secret. A failed release is rolled back by restoring
-the previous manifest/WASM and rerunning `npm run deployment:verify`.
+<img width="1452" height="831" alt="Screenshot 2026-07-19 at 11 46 15 PM" src="https://github.com/user-attachments/assets/12d5269e-cbd5-4ea4-9315-95797000d37f" />
 
 ## Reproducing a deployment
 
