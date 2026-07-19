@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@lumixprotocol/shared-types": ["packages/shared-types/src/index.ts"],
+      "@lumixprotocol/cctp-utils": ["packages/cctp-utils/src/index.ts"],
+      "@lumixprotocol/stellar-utils": ["packages/stellar-utils/src/index.ts"],
+      "@lumixprotocol/evm-utils": ["packages/evm-utils/src/index.ts"],
+      "@lumixprotocol/note-crypto": ["packages/note-crypto/src/index.ts"],
+      "@lumixprotocol/proof-utils": ["packages/proof-utils/src/index.ts"],
+      "@lumixprotocol/rfq-types": ["packages/rfq-types/src/index.ts"],
+      "@lumixprotocol/queue": ["packages/queue/src/index.ts"],
+      "@lumixprotocol/note-vault": ["packages/note-vault/src/index.ts"],
+      "@lumixprotocol/auth-privy": ["packages/auth-privy/src/index.ts"],
+      "@lumixprotocol/stellar-actions": ["packages/stellar-actions/src/index.ts"],
+      "@lumixprotocol/proving": ["packages/proving/src/index.ts"],
+      "@lumixprotocol/proving/paths": ["packages/proving/src/paths.ts"],
+      "@lumixprotocol/proving/env": ["packages/proving/src/env.ts"],
+      "@lumixprotocol/cctp": ["packages/cctp/src/index.ts"],
+      "@lumixprotocol/rfq": ["packages/rfq/src/index.ts"],
+      "@lumixprotocol/mpc-crypto": ["packages/mpc-crypto/src/index.ts"],
+      "@lumixprotocol/assets": ["packages/assets/src/index.ts"]
+    }
+  },
+  "include": ["apps/**/*.ts", "packages/**/*.ts", "scripts/**/*.ts"],
+  "exclude": ["node_modules", "apps/web"]
+}
