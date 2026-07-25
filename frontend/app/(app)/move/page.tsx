@@ -8,6 +8,7 @@ import { useMyNotes, useContracts, useActivity, balanceUsdc, type NoteRow } from
 import { LiveLog } from "@/components/live-log"
 import { ZkPanel, type ZkState } from "@/components/zk-panel"
 import { ActivityItem } from "@/components/activity-item"
+import { connectFreighter, freighterWithdraw } from "@/lib/freighter-withdraw"
 import { ArrowUpRight, ArrowLeftRight, Check, Lock } from "lucide-react"
 
 type Tab = "withdraw" | "trade"
@@ -88,7 +89,6 @@ function Withdraw() {
   async function connect() {
     setConnecting(true); setError(null)
     try {
-      const { connectFreighter } = await import("@/lib/freighter-withdraw")
       setFAddr(await connectFreighter())
     } catch (e) {
       setError((e as Error).message ?? "failed to connect Freighter")
@@ -120,7 +120,6 @@ function Withdraw() {
       if (!prep) throw new Error("withdraw prepare timed out")
 
       // 2) USER signs pool.withdraw's require_auth() in their own Stellar wallet (Freighter).
-      const { freighterWithdraw } = await import("@/lib/freighter-withdraw")
       const tx = await freighterWithdraw({ ...prep, onStatus: setSignStatus })
 
       // 3) record the spend (proof already verified on-chain by the tx).

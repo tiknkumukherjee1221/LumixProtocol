@@ -7,6 +7,7 @@ import { useEffect } from "react"
 import { usePrivy } from "@privy-io/react-auth"
 import { useHealth } from "@/lib/hooks"
 import { GlyphMatrix } from "@/components/ui/glyph-matrix"
+import { StellarWalletButton } from "@/components/stellar-wallet-button"
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard" },
@@ -64,6 +65,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <span className={`h-1.5 w-1.5 rounded-full ${health.data?.ok ? "bg-emerald-400" : "bg-red-400"}`} />
               testnet
             </span>
+            <StellarWalletButton />
             <button
               onClick={() => logout()}
               className="rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground"

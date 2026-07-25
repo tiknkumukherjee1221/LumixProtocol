@@ -20,6 +20,28 @@ plus the services, SDK, and Next.js frontend that operate it.
 | **Frontend** (`frontend/`) | Next.js 16 app — Privy auth, deposit/withdraw/move flows, dashboard, activity, reports |
 | **Database** (`db/migrations`) | Postgres schema, applied idempotently via `npm run db:migrate` |
 
+## Stellar wallet and contract integration
+
+The app has a persistent **Connect Freighter** button in its authenticated header
+and another explicit connection gate before a withdrawal. It uses
+[`@stellar/freighter-api`](frontend/package.json) to request wallet permission,
+retrieve the active public address and network, and sign the Soroban transaction.
+No Stellar secret is sent to the application server.
+
+| User-visible frontend flow | SDK action | Matching canonical contract entrypoint |
+|---|---|---|
+| Connect Freighter | `requestAccess()` then `getAddress()`; `getNetworkDetails()` rejects non-Testnet wallets | Enables the account that authorizes a future spend |
+| Withdraw a shielded note | `signTransaction(prepared.toXDR(), { networkPassphrase, address })`, then Soroban RPC submission | `shielded_pool::withdraw(to, proof_bytes, pub_signals_bytes)` |
+
+The transaction builder in
+[`frontend/lib/freighter-withdraw.ts`](frontend/lib/freighter-withdraw.ts)
+calls `new Contract(pool).call("withdraw", Address.fromString(recipient).toScVal(),
+bytesScVal(proofHex), bytesScVal(publicHex))`. This is the exact argument order of
+[`shielded_pool::withdraw`](contracts/stellar/shielded_pool/src/lib.rs), whose
+`to.require_auth()` is satisfied by the connected Freighter account's signature.
+See [`docs/submission-wallet-evidence.md`](docs/submission-wallet-evidence.md)
+for a compact reviewer checklist.
+
 ## Deployed contracts — Stellar Testnet
 
 Active deployment on Stellar Testnet (RPC `https://soroban-testnet.stellar.org`,

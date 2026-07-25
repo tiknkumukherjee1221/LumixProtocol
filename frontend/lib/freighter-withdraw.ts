@@ -17,6 +17,10 @@ import { Buffer } from "buffer"
 const RPC_URL = "https://soroban-testnet.stellar.org"
 const PASSPHRASE = Networks.TESTNET
 
+// Freighter v6 uses `requestAccess` for the user-consent prompt. Older
+// Freighter integrations named the equivalent permission action `setAllowed`.
+// Keeping the current API here gives the same explicit wallet permission step.
+
 function bytesScVal(hex: string) {
   return xdr.ScVal.scvBytes(Buffer.from(hex.replace(/^0x/, ""), "hex"))
 }
